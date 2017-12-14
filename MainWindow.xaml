@@ -11,7 +11,7 @@
         WindowStyle="SingleBorderWindow">
     <Grid>
         <Grid Margin="10">
-            <ScrollViewer VerticalAlignment="Top" HorizontalAlignment="Right" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+            <ScrollViewer VerticalAlignment="Center" HorizontalAlignment="Right" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
                 <ItemsControl Name="SetsButtons">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -27,8 +27,11 @@
             </ScrollViewer>
         </Grid>
         <TextBlock x:Name="Result" HorizontalAlignment="Left" Margin="24,29,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <Image x:Name="Visual" HorizontalAlignment="Left" Height="311" Margin="472,29,0,0" VerticalAlignment="Top" Width="226"/>
-        <Button x:Name="SubmitButton" Content="Submit" HorizontalAlignment="Left" Margin="241,257,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBlock x:Name="SearchNResults" Text="Results" HorizontalAlignment="Left" Margin="638,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SearchNResultsPrintable" Text="Printable" HorizontalAlignment="Left" Margin="638,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SearchEdition" Text="Edition" HorizontalAlignment="Left" Margin="638,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="-2.014,2.466"/>
+        <Image x:Name="SearchVisual" Source="ms-appx:///cardNotFound.jpg" HorizontalAlignment="Left" Height="311" Margin="392,29,0,0" VerticalAlignment="Top" Width="226"/>
+        <Button x:Name="SubmitButton" Content="Submit" HorizontalAlignment="Left" Margin="241,257,0,0" VerticalAlignment="Top" Width="75" Click="SubmitButtonClick"/>
         <TextBox x:Name="UserInput" HorizontalAlignment="Left" Height="23" Margin="73,253,0,0" TextWrapping="Wrap" Text="Enter card id" VerticalAlignment="Top" Width="120"/>
         <TextBlock x:Name="BoosterSetName" HorizontalAlignment="Center" Margin="0,430,0,0" TextWrapping="Wrap" Text="SET NAME" VerticalAlignment="Top"/>
         <ScrollViewer VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">

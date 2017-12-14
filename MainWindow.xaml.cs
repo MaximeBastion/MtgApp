@@ -28,11 +28,21 @@ namespace MagicTheGatheringApp
         public static SetService setService { get; set; } = new SetService();
         public static List<Card> CurrentBooster { get; set; } = new List<Card>();
         public static List<Set> Sets { get; set; } = new List<Set>();
+        
 
         public static void InitSets()
         {
-            Sets = setService.All().Value;
-            
+            var allSets = setService.All().Value;
+            var boosterableSets = new List<Set>();
+            foreach (Set set in allSets)
+            {
+                if (set.Booster != null)
+                {
+                    boosterableSets.Add(set);
+                }
+                Sets = boosterableSets;
+            }
+
         }
     }
     public class CardWithBImage
@@ -63,20 +73,23 @@ namespace MagicTheGatheringApp
         public MainWindow()
         {
             InitializeComponent();
+            /*
+            SearchVisual.Source = new BitmapImage(
+    new Uri("pack://application:,,,/img/card404.png"));
+    */
             StaticValues.InitSets();
-            GenerateAndDisplayNewBoosterOfSet("M15");
             SetsButtons.ItemsSource = StaticValues.Sets;
             Console.WriteLine();
         }
         public void PrintCard(Card Card)
         {
             var url = Card.ImageUrl.OriginalString;
-            Result.Text = url;
+            Result.Text = Card.Name;
             var bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new Uri(url); ;
             bitmapImage.EndInit();
-            Visual.Source = bitmapImage;
+            SearchVisual.Source = bitmapImage;
         }
         
 
@@ -134,14 +147,61 @@ namespace MagicTheGatheringApp
         public void GenerateAndDisplayNewBoosterOfSet(string SetCode)
         {
             var booster = GetBoosterContentOfSet(SetCode);
-            
-           
-            var cardService = StaticValues.cardService;
-            StaticValues.CurrentBooster = booster;
-            ItemsControl.ItemsSource = GetBIBooster(StaticValues.CurrentBooster);
-            BoosterSetName.Text = SetCode;
-            
-            
+            if (booster != null)
+            {
+                var cardService = StaticValues.cardService;
+                var printableCards = new List<Card>();
+                foreach (Card card in booster)
+                {
+                    if (card.ImageUrl != null)
+                    {
+                        printableCards.Add(card);
+                    }
+                }
+                StaticValues.CurrentBooster = printableCards;
+                ItemsControl.ItemsSource = GetBIBooster(StaticValues.CurrentBooster);
+                BoosterSetName.Text = SetCode;
+            }  
+        }
+
+        public List<Card> GetCardByName(string Cardname)
+        {
+
+            var result = StaticValues.cardService.Where(x => x.Name, Cardname).All().Value;
+            return result;
+        }
+
+        public BitmapImage GetBImage(string cardUrl)
+        {
+            var url = cardUrl;
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(url); ;
+            bitmapImage.EndInit();
+            return bitmapImage;
+        }
+
+        private void SubmitButtonClick(object sender, RoutedEventArgs e)
+        {
+            List<Card> cardFound = GetCardByName(UserInput.Text);
+            List<Card> printableCard = new List<Card>();
+            foreach (Card card in cardFound)
+            {
+                if (card.ImageUrl != null)
+                {
+                    printableCard.Add(card);
+                }
+            }
+            SearchNResults.Text = "Results: " + (printableCard.Count).ToString();
+            if (printableCard.Count != 0)
+            {
+                PrintCard(printableCard[0]);
+            } else
+            {
+
+                Result.Text = "No Cards were found";
+            }
+
         }
     }
 }
