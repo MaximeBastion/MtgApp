@@ -10,7 +10,7 @@
         WindowState="Maximized"
         WindowStyle="SingleBorderWindow">
     <Grid>
-        <Grid Margin="10">
+        <Grid>
             <ScrollViewer VerticalAlignment="Center" HorizontalAlignment="Right" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
                 <ItemsControl Name="SetsButtons">
                     <ItemsControl.ItemsPanel>
@@ -20,20 +20,23 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Tag="{Binding Code}" Content="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="SetButton"></Button>
+                            <Button Tag="{Binding Code}" Content="{Binding Name}" Margin="5, 5, 5, 5" HorizontalAlignment="Left" VerticalAlignment="Top" Click="SetButton"></Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
         <TextBlock x:Name="Result" HorizontalAlignment="Left" Margin="24,29,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <TextBlock x:Name="SearchNResults" Text="Results" HorizontalAlignment="Left" Margin="638,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock x:Name="SearchNResultsPrintable" Text="Printable" HorizontalAlignment="Left" Margin="638,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-        <TextBlock x:Name="SearchEdition" Text="Edition" HorizontalAlignment="Left" Margin="638,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="-2.014,2.466"/>
-        <Image x:Name="SearchVisual" Source="ms-appx:///cardNotFound.jpg" HorizontalAlignment="Left" Height="311" Margin="392,29,0,0" VerticalAlignment="Top" Width="226"/>
-        <Button x:Name="SubmitButton" Content="Submit" HorizontalAlignment="Left" Margin="241,257,0,0" VerticalAlignment="Top" Width="75" Click="SubmitButtonClick"/>
-        <TextBox x:Name="UserInput" HorizontalAlignment="Left" Height="23" Margin="73,253,0,0" TextWrapping="Wrap" Text="Enter card id" VerticalAlignment="Top" Width="120"/>
-        <TextBlock x:Name="BoosterSetName" HorizontalAlignment="Center" Margin="0,430,0,0" TextWrapping="Wrap" Text="SET NAME" VerticalAlignment="Top"/>
+        
+        <TextBlock x:Name="SearchNResultsPrintable" Text="/" HorizontalAlignment="Left" Margin="760,332,500,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SearchEdition" FontSize="20" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,350,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="-2.014,2.466"/>
+        <Image x:Name="SearchVisual" Height="311" Margin="100,10,113,300" VerticalAlignment="Top" Width="226"/>
+        <Button x:Name="SubmitButton" Content="Submit" HorizontalAlignment="Left" Margin="400,330,0,0" VerticalAlignment="Top" Height="23" Width="80" Click="SubmitButtonClick"/>
+        
+        <Button x:Name="Previous" Content="Previous" HorizontalAlignment="Center" Height="23" Margin="370,330,500,0" VerticalAlignment="Top" Width="60" Click="PrevClick"/>
+        <Button x:Name="Next" Content="Next" HorizontalAlignment="Center" Height="23" Margin="620,330,500,0"  VerticalAlignment="Top" Width="60" Click="NextClick"/>
+        <TextBlock x:Name="CurrentIndex" Text="0" HorizontalAlignment="Center" Margin="460,332,500,0"></TextBlock>
+        <TextBlock x:Name="BoosterSetName" FontSize="30" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,430,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <ScrollViewer VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <ItemsControl Name="ItemsControl">
                 <ItemsControl.ItemsPanel>
@@ -48,5 +51,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        <TextBox x:Name="UserInput" HorizontalAlignment="Left" Height="23" Margin="273,330,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

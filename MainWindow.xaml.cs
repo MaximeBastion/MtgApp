@@ -28,6 +28,8 @@ namespace MagicTheGatheringApp
         public static SetService setService { get; set; } = new SetService();
         public static List<Card> CurrentBooster { get; set; } = new List<Card>();
         public static List<Set> Sets { get; set; } = new List<Set>();
+        public static List<Card> CurrentSearchResults { get; set; } = new List<Card>();
+        public static int VisualIndex { get; set; } = 1;
         
 
         public static void InitSets()
@@ -72,6 +74,7 @@ namespace MagicTheGatheringApp
     {
         public MainWindow()
         {
+            
             InitializeComponent();
             /*
             SearchVisual.Source = new BitmapImage(
@@ -84,12 +87,12 @@ namespace MagicTheGatheringApp
         public void PrintCard(Card Card)
         {
             var url = Card.ImageUrl.OriginalString;
-            Result.Text = Card.Name;
             var bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new Uri(url); ;
             bitmapImage.EndInit();
             SearchVisual.Source = bitmapImage;
+            SearchEdition.Text = "Set: " + Card.SetName;
         }
         
 
@@ -100,7 +103,8 @@ namespace MagicTheGatheringApp
             var cardService = StaticValues.cardService;
             StaticValues.CurrentBooster = booster;
             ItemsControl.ItemsSource = GetBIBooster(StaticValues.CurrentBooster);
-            BoosterSetName.Text = SetCode;
+            var set = StaticValues.setService.Find(booster[0].Set);
+            BoosterSetName.Text = set.Value.Name;
 
         }
         private List<String> GetSetsNames()
@@ -160,7 +164,8 @@ namespace MagicTheGatheringApp
                 }
                 StaticValues.CurrentBooster = printableCards;
                 ItemsControl.ItemsSource = GetBIBooster(StaticValues.CurrentBooster);
-                BoosterSetName.Text = SetCode;
+                var set = StaticValues.setService.Find(SetCode);
+                BoosterSetName.Text = set.Value.Name ;
             }  
         }
 
@@ -192,16 +197,43 @@ namespace MagicTheGatheringApp
                     printableCard.Add(card);
                 }
             }
-            SearchNResults.Text = "Results: " + (printableCard.Count).ToString();
+            SearchNResultsPrintable.Text = "/  " + (printableCard.Count).ToString();
             if (printableCard.Count != 0)
             {
                 PrintCard(printableCard[0]);
+                SearchEdition.Text = printableCard[0].SetName;
             } else
             {
-
                 Result.Text = "No Cards were found";
             }
+            StaticValues.CurrentSearchResults = printableCard;
+            CurrentIndex.Text = "1";
+            StaticValues.VisualIndex = 1;
 
+        }
+
+        private void NextClick(object sender, RoutedEventArgs e)
+        {
+            int currentIndex = int.Parse(CurrentIndex.Text);
+            Result.Text = currentIndex.ToString();
+            Result.Text = StaticValues.CurrentSearchResults.Count.ToString();
+            if (currentIndex < StaticValues.CurrentSearchResults.Count)
+            {
+                PrintCard(StaticValues.CurrentSearchResults[currentIndex]);
+                StaticValues.VisualIndex += 1;
+                CurrentIndex.Text = StaticValues.VisualIndex.ToString();
+            }
+        }
+
+        private void PrevClick(object sender, RoutedEventArgs e)
+        {
+            int currentIndex = int.Parse(CurrentIndex.Text);
+            if (currentIndex > 1)
+            {
+                PrintCard(StaticValues.CurrentSearchResults[currentIndex - 2]);
+                StaticValues.VisualIndex -= 1;
+                CurrentIndex.Text = StaticValues.VisualIndex.ToString();
+            }
         }
     }
 }
