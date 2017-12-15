@@ -19,15 +19,13 @@ using MtgApiManager.Lib.Service;
 
 namespace MagicTheGatheringApp
 {
-    /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
-    /// </summary>
     public static class StaticValues
     {
-        public static  CardService cardService { get; set; } = new CardService();
+        public static CardService cardService { get; set; } = new CardService();
         public static SetService setService { get; set; } = new SetService();
         public static List<Card> CurrentBooster { get; set; } = new List<Card>();
         public static List<Set> Sets { get; set; } = new List<Set>();
+        public static List<SetWithYear> SetsYear { get; set; } = new List<SetWithYear>();
         public static List<Card> CurrentSearchResults { get; set; } = new List<Card>();
         public static int VisualIndex { get; set; } = 1;
         
@@ -42,7 +40,12 @@ namespace MagicTheGatheringApp
                 {
                     boosterableSets.Add(set);
                 }
-                Sets = boosterableSets;
+            }
+            Sets = boosterableSets;
+            Sets.Sort((x, y) => DateTime.Compare(DateTime.Parse(x.ReleaseDate), DateTime.Parse(y.ReleaseDate)));
+            foreach (Set seta in Sets)
+            {
+                SetsYear.Add(new SetWithYear(seta));
             }
 
         }
@@ -70,19 +73,26 @@ namespace MagicTheGatheringApp
         
 
     }
+    public class SetWithYear
+    {
+        public Set Set { get; set; }
+        public String Year { get; set; } = "";
+
+        public SetWithYear(Set set)
+        {
+            Set = set;
+            Year = Set.ReleaseDate.Substring(0, 4);
+        }
+    }
+
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             
             InitializeComponent();
-            /*
-            SearchVisual.Source = new BitmapImage(
-    new Uri("pack://application:,,,/img/card404.png"));
-    */
             StaticValues.InitSets();
-            SetsButtons.ItemsSource = StaticValues.Sets;
-            Console.WriteLine();
+            SetsButtons.ItemsSource = StaticValues.SetsYear;
         }
         public void PrintCard(Card Card)
         {
@@ -92,9 +102,8 @@ namespace MagicTheGatheringApp
             bitmapImage.UriSource = new Uri(url); ;
             bitmapImage.EndInit();
             SearchVisual.Source = bitmapImage;
-            SearchEdition.Text = "Set: " + Card.SetName;
+            SearchEdition.Text = Card.SetName;
         }
-        
 
         private void SetButton(object sender, RoutedEventArgs e)
         {
@@ -103,10 +112,18 @@ namespace MagicTheGatheringApp
             var cardService = StaticValues.cardService;
             StaticValues.CurrentBooster = booster;
             ItemsControl.ItemsSource = GetBIBooster(StaticValues.CurrentBooster);
-            var set = StaticValues.setService.Find(booster[0].Set);
-            BoosterSetName.Text = set.Value.Name;
-
+            BoosterSetName.Text = SetCode;
+            /*
+            if (booster[0] != null && booster[0].Set != null)
+            {
+                var set = StaticValues.setService.Find(booster[0].Set);
+                if (set.Value.Name != null)
+                {
+                    BoosterSetName.Text = set.Value.Name;
+                }
+            }*/
         }
+
         private List<String> GetSetsNames()
         {
             SetService service = new SetService();
@@ -117,14 +134,6 @@ namespace MagicTheGatheringApp
                 setsNames.Add(set.Code);
             }
             return setsNames;
-        }
-
-        private Exceptional<Set> GetASetWithCode(string SetCode)
-        {
-            SetService service = new SetService();
-            var result = service.Find(SetCode);
-            Result.Text = result.Value.Code;
-            return result;
         }
 
         private List<Card> GetBoosterContentOfSet(string SetName)
@@ -148,6 +157,7 @@ namespace MagicTheGatheringApp
             }
             return nBooster;
         }
+
         public void GenerateAndDisplayNewBoosterOfSet(string SetCode)
         {
             var booster = GetBoosterContentOfSet(SetCode);
@@ -233,6 +243,15 @@ namespace MagicTheGatheringApp
                 PrintCard(StaticValues.CurrentSearchResults[currentIndex - 2]);
                 StaticValues.VisualIndex -= 1;
                 CurrentIndex.Text = StaticValues.VisualIndex.ToString();
+            }
+        }
+
+        private void SubmitKey(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+               Result.Text = "Submited";
+               SubmitButtonClick(sender, e);
             }
         }
     }
